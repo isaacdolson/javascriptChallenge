@@ -2,16 +2,16 @@ var tableData = data;
 
 var debug = true;
 
-function clearcontent(elementID) { 
-    var div = document.getElementById(elementID); 
+// function clearcontent(elementID) { 
+//     var div = document.getElementById(elementID); 
         
-    while(div.firstChild) { 
-        div.removeChild(div.firstChild); 
-    } 
-}  
+//     while(div.firstChild) { 
+//         div.removeChild(div.firstChild); 
+//     } 
+// }  
 
-// to clear,
-// document.getElementById(elementID).innerHTML = "";
+// // to clear,
+// // document.getElementById(elementID).innerHTML = "";
 function printTable(data) {
     // below doesn't seem to work. testing something new...
     //clearcontent('tbody');    //goes to far...
@@ -36,6 +36,44 @@ var inputField = d3.select("#datetime")
 
 //put a button click check.
 button.on("click", function(){
+    event.preventDefault()
+    var wantedFilter = inputField.property("value");
+    if(debug){
+        console.log(wantedFilter);
+    }
+    d3.select('tbody').selectAll('tr').remove()
+    if (wantedFilter === ''){
+        // Not really sure if I should bring back the basic table, or just leave it how it is if nothing is entered,
+        //but seems better do something than take away all the data...
+        printTable(tableData)
+    } else {
+        var filtered = data.filter(function(x){return x.datetime === wantedFilter});
+        if (filtered.length === 0){
+            filtered = data.filter(function(x){return x.state === wantedFilter.toLowerCase()});
+        } 
+        if (filtered.length === 0){
+            filtered = data.filter(function(x){return x.city === wantedFilter.toLowerCase()});
+        } 
+        if (filtered.length === 0){
+            filtered = data.filter(function(x){return x.country === wantedFilter.toLowerCase()});
+        } 
+        if (filtered.length === 0){
+            filtered = data.filter(function(x){return x.shape === wantedFilter.toLowerCase()});
+        }
+        if (filtered.length === 0){
+            filtered = tableData;
+        }
+        // } else {
+        //     // maybe I should print an error message somewhere...
+        //     filtered = tableData;
+        // }
+        printTable(filtered);
+    }
+});
+
+//have the function for button filter by day and then call the printTable function on the new data.
+inputField.on("change", function(){
+    event.preventDefault();
     var wantedFilter = inputField.property("value");
     if(debug){
         console.log(wantedFilter);
@@ -50,5 +88,5 @@ button.on("click", function(){
 
         printTable(filtered);
     }
+    event.preventDefault();
 });
-//have the function for button filter by day and then call the printTable function on the new data.
