@@ -1,6 +1,6 @@
 var tableData = data;
 
-var debug = true;
+var debug = false;
 
 function printTable(data) {
     for (var i = 0; i < data.length; i++){
